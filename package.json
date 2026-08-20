@@ -1,0 +1,11 @@
+{
+  "name": "s-bac-de-reference",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:dev": "SITE_ENV=development node scripts/build.mjs",
+    "test": "node scripts/validate-reference.mjs && node scripts/validate-contrast.mjs && node scripts/validate-static-site.mjs && node --check src/scripts/navigation.js"
+  }
+}

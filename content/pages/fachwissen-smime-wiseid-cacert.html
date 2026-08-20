@@ -1,0 +1,159 @@
+<main id="article-main" class="s-bac-article" tabindex="-1">
+  <style>.s-bac-article .article-hero{padding-block:clamp(3rem,8vw,6rem);background:var(--color-surface-secondary)}.s-bac-article .article-content{max-width:52rem;padding-block:clamp(2.5rem,7vw,5rem)}.s-bac-article .article-content>h2{margin-block-start:2.75rem}.s-bac-article .article-content>h3{margin-block-start:2rem}.s-bac-article .article-meta,.s-bac-article .legal-note{color:var(--color-text-muted);font-size:var(--font-size-small)}.s-bac-article .article-summary{margin-block:2rem;padding:1.5rem;background:var(--color-surface-secondary);border-inline-start:.25rem solid var(--color-primary)}.s-bac-article .article-summary h2{margin-block-start:0}.s-bac-article .article-table-wrap{overflow-x:auto}.s-bac-article table{width:100%;border-collapse:collapse}.s-bac-article th,.s-bac-article td{padding:.75rem;text-align:left;vertical-align:top;border:.0625rem solid var(--color-border)}.s-bac-article pre{overflow-x:auto;padding:1.25rem;background:var(--color-text);color:var(--color-surface);border-radius:var(--radius-m)}.s-bac-article code{overflow-wrap:anywhere}.s-bac-article .article-sources{margin-block-start:3rem;padding-block-start:2rem;border-block-start:.0625rem solid var(--color-border)}</style>
+  <article>
+    <header class="article-hero">
+      <div class="container">
+        <p class="eyebrow">Fachwissen · IT-Sicherheit · Erfahrungsbericht</p>
+        <h1>S/MIME in der Praxis: Warum ich WISeID und CAcert parallel verwende</h1>
+        <p class="lead">Ein persönlicher Erfahrungsbericht über Zertifikatsvertrauen, Schlüsselaustausch und die Frage, warum OpenPGP für meinen privaten Mailverkehr dennoch die bevorzugte Lösung bleibt.</p>
+        <p class="article-meta">Veröffentlicht am 18. August 2026 · Sascha Bachmeier · ca. 12 Minuten Lesezeit</p>
+      </div>
+    </header>
+
+    <div class="article-content container">
+        <p>E-Mails werden heute fast selbstverständlich über verschlüsselte Verbindungen übertragen. Ein Schlosssymbol im Mailprogramm oder Browser vermittelt dabei schnell den Eindruck, auch die Nachricht selbst sei durchgehend geschützt. In vielen Fällen besteht jedoch lediglich eine Transportverschlüsselung zwischen einzelnen Stationen: vom Mailclient zum eigenen Anbieter und anschließend zwischen den beteiligten Mailservern.</p>
+        <p>Das ist wichtig, aber keine Ende-zu-Ende-Verschlüsselung. Auf den beteiligten Systemen kann eine Nachricht grundsätzlich im Klartext verarbeitet oder gespeichert werden. Wer dort über ausreichende Berechtigungen verfügt oder sich unbefugt Zugriff verschafft, könnte ihre Inhalte unter Umständen einsehen.</p>
+        <p>Mit S/MIME und OpenPGP existieren seit vielen Jahren zwei Verfahren, die E-Mails digital signieren und Ende-zu-Ende verschlüsseln können. Trotzdem haben sich beide im privaten Mailverkehr nicht flächendeckend etabliert. In diesem Artikel beschreibe ich, wie und warum ich S/MIME-Zertifikate von WISeID und CAcert parallel einsetze, weshalb ich für meine alltägliche private Kommunikation dennoch OpenPGP bevorzuge und welche praktischen Hürden mir dabei begegnen.</p>
+
+        <h2>Signieren und Verschlüsseln sind zwei verschiedene Dinge</h2>
+        <p>S/MIME bietet zwei zentrale Funktionen: die digitale Signatur und die Verschlüsselung einer Nachricht.</p>
+        <p>Eine digitale Signatur schützt nicht vor dem Lesen der E-Mail. Sie ermöglicht dem Empfänger vielmehr, die Herkunft und Unversehrtheit einer Nachricht zu prüfen. Der Mailclient kann feststellen, ob die Nachricht nach dem Signieren verändert wurde und mit welchem Zertifikat die Signatur erstellt wurde.</p>
+        <p>Bei einer verschlüsselten Nachricht wird der Inhalt dagegen mit dem öffentlichen Schlüssel des Empfängers geschützt. Entschlüsseln lässt er sich nur mit dem zugehörigen privaten Schlüssel. Der Absender benötigt daher vor dem Versand das S/MIME-Zertifikat des Empfängers, denn dieses enthält dessen öffentlichen Schlüssel.</p>
+        <p>S/MIME verwendet dabei ein hierarchisches Vertrauensmodell. Zertifizierungsstellen bestätigen die Zuordnung zwischen einem öffentlichen Schlüssel und den im Zertifikat enthaltenen Angaben. Damit ein Mailclient ein Zertifikat als vertrauenswürdig einstufen kann, muss er dessen Zertifikatskette bis zu einer vertrauten Stammzertifizierungsstelle prüfen können.</p>
+        <p>Genau an diesem Punkt unterscheiden sich WISeID und CAcert in meinem praktischen Einsatz.</p>
+
+        <h2>Warum ich WISeID Personal verwende</h2>
+        <p>Für eine meiner privaten E-Mail-Adressen habe ich mich bewusst für die kostenpflichtige Variante <strong>WISeID Personal</strong> entschieden. Für meinen Anwendungsfall bot sie das passende Verhältnis zwischen Kosten und praktischem Nutzen. Da die Adresse nicht geschäftlich verwendet wird, benötige ich kein Unternehmenszertifikat. Gleichzeitig wollte ich meine persönlichen Angaben in das Zertifikat aufnehmen lassen und mich nicht auf eine reine Bestätigung des Zugriffs auf die E-Mail-Adresse beschränken.</p>
+        <p>Diese Adresse ist insbesondere für die verschlüsselte Kommunikation mit technisch weniger versierten Personen vorgesehen. Der entscheidende Vorteil besteht für mich darin, dass die Zertifikatskette auf den von mir und meinen Kommunikationspartnern verwendeten Systemen gewöhnlich bereits als vertrauenswürdig erkannt wird.</p>
+        <p>Der Empfänger muss daher normalerweise keine zusätzliche Stammzertifizierungsstelle einrichten, bevor sein Mailclient meine Signatur prüfen kann. Mit einer signierten Nachricht erhält er zugleich mein persönliches Zertifikat und den darin enthaltenen öffentlichen Schlüssel. Abhängig vom verwendeten Mailprogramm wird das Zertifikat automatisch übernommen oder kann mit wenigen Schritten gespeichert werden.</p>
+        <p>Die kostenpflichtige Variante löst nicht alle organisatorischen Probleme von S/MIME. Auch der Empfänger benötigt ein eigenes S/MIME-Zertifikat und muss mir seinen öffentlichen Schlüssel zur Verfügung stellen, bevor ich eine Nachricht für ihn verschlüsseln kann. WISeID reduziert in meinem Anwendungsfall aber eine wesentliche Einstiegshürde: Die Vertrauensstellung der ausstellenden Zertifizierungsstelle muss auf der Gegenseite üblicherweise nicht erst manuell hergestellt werden.</p>
+
+        <h2>Warum ich zusätzlich CAcert verwende</h2>
+        <p>Für meine weiteren E-Mail-Adressen verwende ich kostenlose Client-Zertifikate von CAcert. CAcert ist eine gemeinschaftlich betriebene Zertifizierungsstelle, deren Zertifikate unter anderem zum Signieren und Verschlüsseln von E-Mails eingesetzt werden können.</p>
+        <p>CAcert verwendet ein eigenes Assurance-Verfahren. Dabei wird die Identität eines Mitglieds nach den Regeln der CAcert-Community geprüft. Ab einer ausreichenden Zahl von Assurance Points kann der bestätigte Name in ein persönliches Zertifikat aufgenommen werden. Da ich selbst die entsprechende Prüfung durchlaufen habe und CAcert-Assurer bin, können meine Zertifikate neben der E-Mail-Adresse auch meinen geprüften Namen enthalten.</p>
+        <p>Der wesentliche Unterschied zu meinem WISeID-Zertifikat liegt nicht in der grundlegenden Funktionsweise der Verschlüsselung, sondern in der Verbreitung der Vertrauenskette. Die CAcert-Stammzertifikate sind in den Vertrauensspeichern vieler Betriebssysteme und Anwendungen nicht standardmäßig enthalten. Ein Mailclient kann mein Zertifikat zwar empfangen und technisch verarbeiten, die ausstellende Zertifizierungsstelle aber zunächst als unbekannt einstufen.</p>
+        <p>Damit meine CAcert-Zertifikate ohne entsprechende Warnung als vertrauenswürdig angezeigt werden, muss mein Kommunikationspartner die benötigten CAcert-Stamm- und Zwischenzertifikate aus einer verifizierten Quelle installieren und ihnen für den vorgesehenen Zweck vertrauen. CAcert weist selbst auf diese notwendige manuelle Einrichtung hin und empfiehlt, vor dem Import die Fingerabdrücke der Stammzertifikate zu kontrollieren.</p>
+        <p>Für technisch versierte Kommunikationspartner ist dieser zusätzliche Schritt meist vertretbar. Bei Personen ohne Erfahrung mit Zertifikaten kann er jedoch eine erhebliche Hürde darstellen. Genau deshalb verwende ich CAcert vor allem für Adressen und Kontakte, bei denen ich die notwendige Einrichtung erklären kann oder die Gegenseite bereits mit Public-Key-Infrastrukturen vertraut ist.</p>
+
+        <h2>Der erste Kontakt beginnt mit einer signierten Nachricht</h2>
+        <p>Eine S/MIME-verschlüsselte Kommunikation kann normalerweise nicht allein mit der Kenntnis einer E-Mail-Adresse begonnen werden. Der Absender benötigt zunächst das persönliche Zertifikat des Empfängers und damit dessen öffentlichen Schlüssel.</p>
+        <p>Mein Standardvorgehen besteht deshalb aus einem wechselseitigen Austausch signierter Nachrichten:</p>
+        <ol>
+          <li>Ich sende meinem Kommunikationspartner zunächst eine digital signierte S/MIME-Nachricht. Die Nachricht enthält mein Zertifikat und meinen öffentlichen Schlüssel.</li>
+          <li>Der Empfänger prüft die Signatur und übernimmt mein Zertifikat in seinen Mailclient. Abhängig von der eingesetzten Anwendung geschieht dies automatisch oder muss bestätigt werden.</li>
+          <li>Der Empfänger antwortet ebenfalls mit einer digital signierten Nachricht. Dadurch erhalte ich sein Zertifikat und seinen öffentlichen Schlüssel.</li>
+          <li>Sobald beide Seiten über das Zertifikat der jeweils anderen Person verfügen, können die folgenden Nachrichten Ende-zu-Ende-verschlüsselt versendet werden.</li>
+        </ol>
+        <pre><code>Signierte erste Nachricht
+Ich ───────────────────────────────► Empfänger
+     enthält mein Zertifikat
+
+Signierte Antwort
+Ich ◄─────────────────────────────── Empfänger
+          enthält sein Zertifikat
+
+Verschlüsselte Kommunikation
+Ich ◄═══════════════════════════════► Empfänger</code></pre>
+        <p>Die digitale Signatur erfüllt bei dieser ersten Kontaktaufnahme somit zwei Aufgaben. Sie ermöglicht die Prüfung der Nachricht und transportiert gleichzeitig den öffentlichen Schlüssel, der für eine verschlüsselte Antwort benötigt wird.</p>
+        <p>Antwortet der Empfänger ohne S/MIME-Signatur, fehlt mir weiterhin sein Zertifikat. In diesem Fall bitte ich um eine signierte Antwort und unterstütze bei Bedarf bei der Einrichtung. Auch Apple beschreibt für die Kommunikation außerhalb einer gemeinsamen Exchange-Umgebung, dass zunächst signierte Nachrichten ausgetauscht werden müssen, bevor eine verschlüsselte Nachricht versendet werden kann.</p>
+
+        <h2>Thunderbird als gemeinsamer Mailclient</h2>
+        <p>Unter macOS, Linux und Windows verwende ich Mozilla Thunderbird in der jeweils aktuellen Fassung. Für mich hat das den Vorteil, dass die Verwaltung von Konten, Zertifikaten und Schlüsseln auf allen drei Betriebssystemen weitgehend einheitlich funktioniert.</p>
+        <p>Thunderbird unterstützt sowohl S/MIME als auch OpenPGP direkt. Persönliche S/MIME-Zertifikate lassen sich den jeweiligen Mailkonten zum Signieren und Verschlüsseln zuordnen. Erhaltene Zertifikate anderer Personen können verwaltet und anschließend für die Verschlüsselung verwendet werden.</p>
+        <p>Eine ausführliche Schritt-für-Schritt-Anleitung möchte ich an dieser Stelle bewusst nicht wiederholen. Solche Anleitungen sind bereits in ausreichender Zahl vorhanden und können durch Änderungen an Menüs oder Programmversionen schnell veralten. Für meinen Erfahrungsbericht ist entscheidender, dass Thunderbird mir auf allen verwendeten Desktopbetriebssystemen einen einheitlichen Umgang mit beiden Verschlüsselungsverfahren ermöglicht.</p>
+
+        <h2>S/MIME mit der Mail-App auf dem iPhone</h2>
+        <p>Meine S/MIME-Zertifikate verwende ich außerdem mit der Mail-App auf dem iPhone. iOS unterstützt sowohl das digitale Signieren als auch das Verschlüsseln einzelner Nachrichten mit S/MIME.</p>
+        <p>Damit eine verschlüsselte Nachricht versendet werden kann, muss auch dort das Zertifikat des Empfängers verfügbar sein. Außerhalb einer gemeinsamen Exchange-Umgebung geschieht das üblicherweise durch den vorherigen Empfang einer signierten Nachricht. Die Mail-App kann das darin enthaltene Zertifikat anschließend der betreffenden E-Mail-Adresse zuordnen.</p>
+        <p>Dadurch kann ich meine S/MIME-geschützte Kommunikation auch unterwegs mit der vorinstallierten Mail-App fortführen. Für meinen Einsatzzweck ist das ein praktischer Vorteil gegenüber Verfahren, für die auf manchen Plattformen eine zusätzliche Anwendung erforderlich ist.</p>
+
+        <h2>Sicherung der Zertifikate und privaten Schlüssel</h2>
+        <p>Meine exportierten Zertifikate bewahre ich verschlüsselt auf meinem NAS auf. Von dort kann ich sie bei Bedarf in Thunderbird oder auf einem mobilen Gerät installieren.</p>
+        <p>Entscheidend ist dabei nicht nur das öffentlich weitergebbare Zertifikat. Für die eigene Nutzung wird auch der private Schlüssel benötigt. Gerät dieser in fremde Hände, können damit je nach Verwendungszweck Nachrichten im eigenen Namen signiert oder für den Schlüssel verschlüsselte Inhalte gelesen werden.</p>
+        <p>Exportierte PKCS#12-Dateien sollten deshalb mit einem starken Kennwort geschützt und nur an einem zuverlässig abgesicherten Ort aufbewahrt werden. Die Verschlüsselung des Speichersystems ergänzt diesen Schutz, ersetzt aber nicht unbedingt den Schutz der eigentlichen Exportdatei.</p>
+        <p>Die Sicherung alter privater Schlüssel ist ebenfalls wichtig. Läuft ein Zertifikat ab, werden ältere Nachrichten dadurch nicht automatisch unlesbar. Wird der zugehörige private Schlüssel jedoch gelöscht oder geht er verloren, können damit verschlüsselte Bestandsnachrichten möglicherweise nicht mehr entschlüsselt werden. Ein neu ausgestelltes Zertifikat mit einem neuen Schlüsselpaar ersetzt den alten privaten Schlüssel nicht.</p>
+        <p>Aus diesem Grund gehören für mich sowohl der Schutz vor unbefugtem Zugriff als auch eine verlässliche Datensicherung zum praktischen Einsatz von S/MIME.</p>
+
+        <h2>Warum ich im privaten Alltag OpenPGP bevorzuge</h2>
+        <p>Obwohl ich S/MIME aktiv nutze, bevorzuge ich für meinen regelmäßigen privaten Mailverkehr OpenPGP. Meine ausgehenden Nachrichten werden deshalb standardmäßig mit meinem OpenPGP-Schlüssel signiert.</p>
+        <p>Diese Entscheidung ist teilweise eine persönliche Präferenz – beinahe eine Glaubensfrage. Sowohl S/MIME als auch OpenPGP beruhen auf öffentlich dokumentierten Standards. Der für mich relevante Unterschied liegt vor allem im Vertrauensmodell und in der Verwaltung der öffentlichen Schlüssel.</p>
+        <p>S/MIME stützt sich üblicherweise auf eine hierarchische Public-Key-Infrastruktur. Eine Zertifizierungsstelle bestätigt bestimmte Angaben im Zertifikat, und der Mailclient versucht, eine gültige Kette zu einer vertrauten Stammzertifizierungsstelle aufzubauen.</p>
+        <p>Bei OpenPGP verwalte ich meine Schlüssel und Vertrauensentscheidungen stärker selbst. Ich kann Schlüssel über unabhängige Wege prüfen und bin nicht für jede Identitätszuordnung von einer zentralen Zertifizierungsstelle abhängig. Dieses Modell entspricht eher meiner persönlichen Vorstellung von privater verschlüsselter Kommunikation.</p>
+        <p>Das bedeutet nicht, dass OpenPGP grundsätzlich sicherer als S/MIME wäre. Die Sicherheit hängt bei beiden Verfahren unter anderem von der Schlüsselverwaltung, der verwendeten Software, der Prüfung des Kommunikationspartners und dem Schutz des privaten Schlüssels ab.</p>
+
+        <h2>Öffentliche Verzeichnisse als Vorteil von OpenPGP</h2>
+        <p>Ein weiterer praktischer Grund für meine OpenPGP-Präferenz ist die Möglichkeit, bereits vor der ersten Kontaktaufnahme nach einem öffentlichen Schlüssel zu suchen. Dafür verwende ich hauptsächlich:</p>
+        <ul>
+          <li><a href="https://keys.openpgp.org/" rel="external">keys.openpgp.org</a></li>
+          <li>das <a href="https://keyserver1.pgp.com/vkd/GetWelcomeScreen.event" rel="external">PGP Global Directory</a></li>
+        </ul>
+        <p><code>keys.openpgp.org</code> wird von Thunderbird standardmäßig für die Suche nach OpenPGP-Schlüsseln verwendet. Der Dienst erlaubt eine Suche anhand der vollständigen E-Mail-Adresse. Damit die zugehörigen Identitätsinformationen veröffentlicht und über die Adresse gefunden werden können, muss deren Inhaber die Veröffentlichung zuvor bestätigen.</p>
+        <p>Finde ich einen passenden Schlüssel, kann ich ihn bereits vor dem Versand der ersten Nachricht in Thunderbird übernehmen. Damit ist es grundsätzlich möglich, schon die erste Kontaktaufnahme zu verschlüsseln.</p>
+        <p>Ein Treffer in einem Schlüsselverzeichnis ist allerdings nicht automatisch ein vollständiger Identitätsnachweis. Die Bestätigung einer E-Mail-Adresse zeigt zunächst, dass die veröffentlichende Person Zugriff auf das betreffende Postfach hatte. Ob hinter dem Schlüssel tatsächlich die erwartete Person steht, sollte bei besonders vertraulicher Kommunikation zusätzlich geprüft werden. Dafür kann der Fingerabdruck des Schlüssels über einen unabhängigen Kommunikationsweg abgeglichen werden.</p>
+        <p>Bei S/MIME fehlt im öffentlichen Mailverkehr ein vergleichbar etabliertes und von verbreiteten Mailclients selbstverständlich genutztes Zertifikatsverzeichnis. Technische Möglichkeiten existieren durchaus: Organisationen können Zertifikate beispielsweise über Verzeichnisdienste bereitstellen. Mit SMIMEA wurde außerdem ein experimentelles Verfahren beschrieben, das S/MIME-Zertifikate oder öffentliche Schlüssel mithilfe von DNSSEC einer E-Mail-Adresse zuordnen kann.</p>
+        <p>Diese Verfahren haben sich im gewöhnlichen privaten Mailverkehr jedoch nicht flächendeckend durchgesetzt. Selbst die S/MIME-Spezifikation weist darauf hin, dass Verzeichnis- und DNS-Verfahren nur begrenzten Nutzen haben, solange sie nicht breit eingesetzt werden. In der Praxis erhalte ich das S/MIME-Zertifikat eines Kommunikationspartners daher meist erst durch eine signierte Nachricht.</p>
+
+        <h2>WISeID, CAcert und OpenPGP im Vergleich</h2>
+        <div class="article-table-wrap" role="region" aria-label="Vergleich der Verschlüsselungsverfahren" tabindex="0">
+          <table>
+            <thead><tr><th scope="col">Eigenschaft</th><th scope="col">WISeID Personal</th><th scope="col">CAcert</th><th scope="col">OpenPGP</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Grundmodell</th><td>S/MIME mit Zertifizierungsstelle</td><td>S/MIME mit gemeinschaftlicher Zertifizierungsstelle</td><td>Dezentral verwaltete OpenPGP-Schlüssel</td></tr>
+              <tr><th scope="row">Kosten in meinem Fall</th><td>Kostenpflichtig</td><td>Kostenlos</td><td>Kostenlos</td></tr>
+              <tr><th scope="row">Persönliche Angaben</th><td>In meiner gewählten Variante enthalten</td><td>Nach entsprechender Assurance möglich</td><td>Vom Schlüsselinhaber selbst eingetragen</td></tr>
+              <tr><th scope="row">Vertrauen beim Empfänger</th><td>Zertifikatskette wird auf verbreiteten Systemen gewöhnlich erkannt</td><td>CAcert-Vertrauenskette muss meist manuell eingerichtet werden</td><td>Abhängig von Schlüsselprüfung und lokalem Vertrauensmodell</td></tr>
+              <tr><th scope="row">Erste verschlüsselte Nachricht</th><td>Meist erst nach Zertifikatsaustausch</td><td>Meist erst nach Zertifikatsaustausch</td><td>Bei veröffentlichtem und geprüftem Schlüssel vorab möglich</td></tr>
+              <tr><th scope="row">Öffentliche Schlüsselsuche</th><td>Im privaten Alltag nicht allgemein etabliert</td><td>Im privaten Alltag nicht allgemein etabliert</td><td>Über Schlüsselserver und weitere Verfahren möglich</td></tr>
+              <tr><th scope="row">Mein hauptsächlicher Einsatz</th><td>Kontakte mit niedriger technischer Einstiegshürde</td><td>Weitere Adressen und technisch versierte Kontakte</td><td>Regelmäßige private Kommunikation</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Diese Tabelle ist keine allgemeingültige Rangfolge. Sie beschreibt meine Anforderungen und Erfahrungen. In Unternehmen können zentrale Verzeichnisdienste, Gerätemanagement, interne Zertifizierungsstellen oder E-Mail-Gateways die Ausgangslage erheblich verändern.</p>
+
+        <h2>Grenzen der Ende-zu-Ende-Verschlüsselung</h2>
+        <p>S/MIME und OpenPGP schützen den Inhalt einer Nachricht, lösen aber nicht jedes Datenschutz- und Sicherheitsproblem.</p>
+        <p>Bestimmte Metadaten müssen für die Zustellung weiterhin verarbeitet werden. Dazu gehören insbesondere Absender, Empfänger und technische Transportinformationen. Auch der Betreff einer E-Mail ist üblicherweise nicht zuverlässig Ende-zu-Ende-verschlüsselt. Vertrauliche Informationen gehören daher nicht in die Betreffzeile.</p>
+        <p>Eine verschlüsselte Nachricht schützt außerdem nicht vor einem bereits kompromittierten Endgerät. Kann ein Angreifer auf den entsperrten Mailclient oder den privaten Schlüssel zugreifen, kann er möglicherweise auch entschlüsselte Nachrichten lesen. Ebenso kann ein legitimer Empfänger Inhalte nach dem Entschlüsseln kopieren, weiterleiten oder anderweitig offenlegen.</p>
+        <p>Schließlich bleibt die Verfügbarkeit ein praktisches Thema. Verliert ein Benutzer seinen privaten Schlüssel, verliert er möglicherweise auch den Zugriff auf ältere verschlüsselte Nachrichten. Sichere Schlüsselverwaltung und Datensicherung sind deshalb keine optionalen Ergänzungen, sondern ein notwendiger Bestandteil der Lösung.</p>
+
+        <h2>Warum sich E-Mail-Verschlüsselung kaum durchgesetzt hat</h2>
+        <p>Aus meiner Sicht scheitert E-Mail-Verschlüsselung heute weniger an fehlenden kryptografischen Verfahren als an ihrer Handhabung.</p>
+        <p>Anwender müssen Zertifikate oder Schlüssel erzeugen, sichern, auf mehreren Geräten einrichten und bei Ablauf rechtzeitig ersetzen. Kommunikationspartner müssen öffentliche Schlüssel austauschen und deren Zuordnung zur richtigen Person bewerten. Dazu kommen unterschiedliche Mailprogramme, Betriebssysteme und Vertrauensspeicher.</p>
+        <p>Gleichzeitig vermittelt die vorhandene Transportverschlüsselung vielen Nutzern bereits ein ausreichendes Sicherheitsgefühl. Der Unterschied zwischen einer verschlüsselten Verbindung zum Mailserver und einer Ende-zu-Ende-verschlüsselten Nachricht ist außerhalb von IT-Fachkreisen wenig bekannt – und selbst innerhalb der IT nicht immer vollständig präsent.</p>
+        <p>Das Ergebnis ist ein klassisches Henne-Ei-Problem: Viele Menschen richten keine E-Mail-Verschlüsselung ein, weil ihre Kommunikationspartner sie nicht verwenden. Gleichzeitig fehlt den Kommunikationspartnern der Anlass zur Einrichtung, weil sie nur selten verschlüsselte Nachrichten erhalten.</p>
+
+        <h2>Persönliches Fazit</h2>
+        <p>Für mich gibt es nicht die eine ideale Lösung für jede E-Mail-Adresse und jeden Kommunikationspartner.</p>
+        <p>WISeID Personal verwende ich dort, wo eine möglichst geringe technische Einstiegshürde wichtig ist. Die vorhandene Vertrauenskette erleichtert die erste signierte Kommunikation mit Personen, die sich bisher wenig mit Zertifikaten beschäftigt haben.</p>
+        <p>CAcert ermöglicht mir kostenlose persönliche Zertifikate für weitere E-Mail-Adressen. Aufgrund meiner Assurance können diese meinen geprüften Namen enthalten. Dafür muss die Gegenseite bereit sein, die CAcert-Zertifikatskette bewusst zu installieren und ihr zu vertrauen.</p>
+        <p>OpenPGP bleibt meine bevorzugte Lösung für den regelmäßigen privaten Mailverkehr. Ausschlaggebend sind für mich das dezentrale Vertrauensmodell, die eigene Kontrolle über die Schlüssel und die Möglichkeit, veröffentlichte Schlüssel bereits vor der ersten Kontaktaufnahme zu suchen.</p>
+        <p>S/MIME und OpenPGP müssen dabei nicht als konkurrierende Glaubenssysteme betrachtet werden. Beide haben Stärken und Schwächen. In meinem Alltag ergänzen sie sich: OpenPGP ist meine persönliche Standardlösung, während S/MIME insbesondere bei der Kontaktaufnahme und in Umgebungen mit vorhandener Zertifikatsunterstützung seine praktischen Vorteile ausspielt.</p>
+        <p>Entscheidend ist letztlich nicht, welches Verfahren auf dem Papier überlegen erscheint. Entscheidend ist, ob Absender und Empfänger es tatsächlich verwenden, ihre Schlüssel sorgfältig schützen und den Unterschied zwischen Transport- und Ende-zu-Ende-Verschlüsselung verstehen.</p>
+
+        <aside class="article-related" aria-labelledby="article-related-heading">
+          <p class="eyebrow">Passend dazu</p>
+          <h2 id="article-related-heading">OpenPGP-E-Mail-Verschlüsselung</h2>
+          <p>Der bestehende Fachartikel betrachtet OpenPGP ausführlicher und ergänzt die hier beschriebene persönliche Einordnung.</p>
+          <a href="/fachwissen/openpgp-e-mail-verschluesselung/">Zum OpenPGP-Artikel</a>
+        </aside>
+
+        <section class="article-sources" aria-labelledby="article-sources-heading">
+          <h2 id="article-sources-heading">Quellen und weiterführende Informationen</h2>
+          <ul>
+            <li><a href="https://support.mozilla.org/en-US/kb/introduction-to-e2e-encryption" rel="external">Mozilla: Einführung in Ende-zu-Ende-Verschlüsselung mit Thunderbird</a></li>
+            <li><a href="https://support.mozilla.org/de/kb/voraussetzungen-zum-versand-verschlusselter-e-mailrden" rel="external">Mozilla: Voraussetzungen zum Versand verschlüsselter Nachrichten</a></li>
+            <li><a href="https://support.apple.com/de-de/102245" rel="external">Apple: S/MIME in der Mail-App auf dem iPhone verwenden</a></li>
+            <li><a href="https://www.cacert.org/policy/CertificationPracticeStatement.html" rel="external">CAcert: Certification Practice Statement</a></li>
+            <li><a href="https://wiki.cacert.org/FAQ/ImportRootCert" rel="external">CAcert: Stammzertifikate importieren</a></li>
+            <li><a href="https://www.rfc-editor.org/info/rfc8550/" rel="external">RFC 8550: S/MIME Version 4.0 Certificate Handling</a></li>
+            <li><a href="https://www.rfc-editor.org/rfc/rfc8162" rel="external">RFC 8162: DNS-basierte Zuordnung von S/MIME-Zertifikaten</a></li>
+            <li><a href="https://www.rfc-editor.org/rfc/rfc9580.html" rel="external">RFC 9580: OpenPGP</a></li>
+            <li><a href="https://keys.openpgp.org/about/" rel="external">keys.openpgp.org: Funktionsweise und Adressbestätigung</a></li>
+          </ul>
+          <p class="article-note legal-note"><strong>Stand: August 2026.</strong> Zertifikatsangebote, Preise, Vertrauensspeicher und Bedienoberflächen können sich ändern. Vor einer konkreten Einrichtung sollten deshalb die aktuellen Angaben der jeweiligen Anbieter und Softwarehersteller geprüft werden.</p>
+        </section>
+
+        <a class="article-backlink" href="/fachwissen/">← Zurück zum Fachwissen</a>
+    </div>
+  </article>
+</main>

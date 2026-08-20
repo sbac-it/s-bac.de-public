@@ -1,0 +1,37 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor- und IDE-Dateien
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporäre Dateien
+*.tmp
+*.temp
+*.bak
+*.log
+
+# Umgebungs- und Zugangsdaten
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Archive und Exporte
+*.zip
+*.tar
+*.tar.gz
+
+# Sitejet-Exporte
+sitejet/exports/*
+!sitejet/exports/.gitkeep
+
+# Lokal erzeugte statische Website
+dist/
