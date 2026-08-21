@@ -11,6 +11,7 @@ Die HTML-Dateien in diesem Verzeichnis sind die versionierten Inhaltsquellen der
 | `leistungen-automatisierung.html` | `/leistungen/automatisierung/` |
 | `projekte.html` | `/projekte/` |
 | `fachwissen.html` | `/fachwissen/` |
+| `fachwissen-moderne-it-governance.html` | `/fachwissen/moderne-it-governance/` |
 | `fachwissen-openpgp-e-mail-verschluesselung.html` | `/fachwissen/openpgp-e-mail-verschluesselung/` |
 | `fachwissen-smime-wiseid-cacert.html` | `/fachwissen/smime-wiseid-cacert/` |
 | `kontakt.html` | `/kontakt/` |

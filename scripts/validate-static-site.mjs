@@ -42,7 +42,7 @@ for (const file of htmlFiles) {
   }
 }
 
-if (htmlFiles.length !== 15) failures.push(`Expected 15 HTML files, found ${htmlFiles.length}.`);
+if (htmlFiles.length !== 16) failures.push(`Expected 16 HTML files, found ${htmlFiles.length}.`);
 if (failures.length) {
   console.error(failures.join("\n"));
   process.exitCode = 1;
